@@ -1,0 +1,42 @@
+Load up the webpage you want to scrape and press F12 for the browser console, and run the following to load Jquery into the page: 
+
+var jq = document.createElement('script');
+jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
+document.getElementsByTagName('head')[0].appendChild(jq);
+jQuery.noConflict();
+
+
+Then paste the following function and hit Enter: 
+
+
+function SaveToDisk(fileURL, fileName) {
+    // for non-IE
+    if (!window.ActiveXObject) {
+        var save = document.createElement('a');
+        save.href = fileURL;
+        save.target = '_blank';
+        save.download = fileName || 'unknown';
+
+        var event = document.createEvent('Event');
+        event.initEvent('click', true, true);
+        save.dispatchEvent(event);
+        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+    }
+
+    // for IE
+    else if ( !! window.ActiveXObject && document.execCommand)     {
+        var _window = window.open(fileURL, '_blank');
+        _window.document.close();
+        _window.document.execCommand('SaveAs', true, fileName || fileURL)
+        _window.close();
+    }
+}
+
+Then run the following, changing the variable to the class name of the images you wish to scrape : 
+
+var imgIdentifier = "SPECIFY THE CLASS NAME WITH .CLASS HERE"
+
+$.each($(imgIdentifier), function( index, value ) {var fileURL = $(this).attr('src'); SaveToDisk(fileURL, index) });
+
+If you've got an okay handle on javascript / jquery then you'll be able to alter this script to scrape anything, not just images.
+
